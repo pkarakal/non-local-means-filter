@@ -8,6 +8,9 @@ if (ENABLE_CLANGTIDY)
     include(FindClangTidy.cmake)
 endif ()
 
+
+add_library(rapidcsv OBJECT lib/rapidcsv.h)
+
 add_executable(non_local_means_filter main.cu)
 
 set_target_properties(
