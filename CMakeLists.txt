@@ -58,15 +58,9 @@ add_library(rapidcsv OBJECT lib/rapidcsv.h)
 target_link_libraries(rapidcsv)
 
 add_executable(non_local_means_filter main.cu)
-target_link_libraries(main ${OPENCV_LIBRARIES})
-
-if (ENABLE_IMAGEMAGICK AND IMAGEMAGICK_FOUND)
-    target_link_libraries(main ${IMAGEMAGICK_LIBRARIES})
-    target_link_libraries(non_local_means_filter ${IMAGEMAGICK_LIBRARIES})
-endif()
 
 if(ENABLE_OCTAVE AND OCTAVE_FOUND)
-    target_link_libraries(main ${OCTAVE_LIBS})
+    target_link_libraries(non_local_means_filter ${OCTAVE_LIBS})
 endif()
 
 set_target_properties(
