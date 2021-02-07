@@ -7,11 +7,19 @@ find_package(PkgConfig)
 
 option(ENABLE_CLANGTIDY "Enable clang-tidy support?" OFF)
 option(ENABLE_PYBIND11 "Enable python bindings support?" ON)
+option(ENABLE_MATLAB "Enable Matlab support?" OFF)
 
 if (ENABLE_CLANGTIDY)
-    include(FindClangTidy.cmake)
+    include(cmake/FindClangTidy.cmake)
 endif ()
 
+if(ENABLE_MATLAB)
+    include(cmake/FindMatlab.cmake)
+    if(MATLAB_FOUND)
+        link_libraries(${MATLAB_LIBRARIES} mat)
+        set(USE_MATLAB 1)
+    endif()
+endif()
 
 if(ENABLE_PYBIND11)
     find_package(pybind11 REQUIRED)

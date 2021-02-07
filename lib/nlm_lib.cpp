@@ -1,5 +1,27 @@
 #include "nlm_lib.h"
 
+#ifdef USE_MATLAB
+void matread(char* file, std::vector<double>& v, const std::string& variable){
+    // open MAT-file
+    MATFile *pmat = matOpen(file, "r");
+    if (pmat == nullptr) return;
+
+    // extract the specified variable
+    mxArray *arr = matGetVariable(pmat, variable.c_str());
+    if (arr != nullptr && mxIsDouble(arr) && !mxIsEmpty(arr)) {
+        // copy data
+        mwSize num = mxGetNumberOfElements(arr);
+        double *pr = mxGetPr(arr);
+        if (pr != nullptr) {
+            v.reserve(num); //is faster than resize :-)
+            v.assign(pr, pr+num);
+        }
+    }
+    mxDestroyArray(arr);
+    matClose(pmat);
+}
+#endif
+
 namespace rc = rapidcsv;
 
 void read_csv(char* file, std::vector<double>& v){
