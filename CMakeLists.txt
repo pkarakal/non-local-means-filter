@@ -9,6 +9,7 @@ option(ENABLE_CLANGTIDY "Enable clang-tidy support?" OFF)
 option(ENABLE_PYBIND11 "Enable python bindings support?" ON)
 option(ENABLE_OCTAVE "Enable Octave support?" OFF)
 option(ENABLE_MATLAB "Enable Matlab support?" OFF)
+option(ENABLE_OPENCV "Enable OpenCV support" ON)
 
 if (ENABLE_CLANGTIDY)
     include(cmake/FindClangTidy.cmake)
@@ -39,12 +40,23 @@ if(ENABLE_PYBIND11)
     set(USE_PARSED_FILES 1)
 endif()
 
+if(ENABLE_OPENCV)
+    include(cmake/FindOpenCV.cmake)
+    if(OPENCV_FOUND)
+        link_libraries(${OPENCV_LIBRARIES})
+#        find_package(Qt5Widgets)
+        set(USE_OPENCV 1)
+    endif()
+endif()
+
 
 add_library(nlm_lib OBJECT lib/nlm_lib.cpp lib/nlm_lib.h)
 add_library(rapidcsv OBJECT lib/rapidcsv.h)
 target_link_libraries(rapidcsv)
 
 add_executable(non_local_means_filter main.cu)
+target_link_libraries(main ${OPENCV_LIBRARIES})
+
 if (ENABLE_IMAGEMAGICK AND IMAGEMAGICK_FOUND)
     target_link_libraries(main ${IMAGEMAGICK_LIBRARIES})
     target_link_libraries(non_local_means_filter ${IMAGEMAGICK_LIBRARIES})

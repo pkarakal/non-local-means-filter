@@ -54,6 +54,23 @@ void octave_read(char* file, std::vector<double>& v , const std::string& variabl
 }
 #endif
 
+#ifdef USE_OPENCV
+static inline double divide (double x) { return x/255; }
+
+void opencv_read(char* file, std::vector<double>& v){
+    cv::Mat image;
+    image = cv::imread( file, 0 );
+    if ( !image.data )
+    {
+        std::cerr << "No image data" << std::endl;
+        return;
+    }
+    v = std::vector<double>(image.data, image.data + image.total());
+    // divides vector entries by 255 and stores them back (limits values between [0,255]
+    std::transform(v.begin(), v.end(), v.begin(), divide);
+}
+#endif
+
 
 namespace rc = rapidcsv;
 
