@@ -22,9 +22,20 @@ if(ENABLE_PYBIND11)
     set(USE_PARSED_FILES 1)
 endif()
 
+
+add_library(nlm_lib OBJECT lib/nlm_lib.cpp lib/nlm_lib.h)
 add_library(rapidcsv OBJECT lib/rapidcsv.h)
+target_link_libraries(rapidcsv)
 
 add_executable(non_local_means_filter main.cu)
+if (ENABLE_IMAGEMAGICK AND IMAGEMAGICK_FOUND)
+    target_link_libraries(main ${IMAGEMAGICK_LIBRARIES})
+    target_link_libraries(non_local_means_filter ${IMAGEMAGICK_LIBRARIES})
+endif()
+
+if(ENABLE_OCTAVE AND OCTAVE_FOUND)
+    target_link_libraries(main ${OCTAVE_LIBS})
+endif()
 
 set_target_properties(
         non_local_means_filter
