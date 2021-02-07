@@ -49,6 +49,9 @@ if(ENABLE_OPENCV)
     endif()
 endif()
 
+if(NOT DEFINED ${CMAKE_CUDA_ARCHITECTURES})
+    set(CMAKE_CUDA_ARCHITECTURES 52 61 75)
+endif()
 
 add_library(nlm_lib OBJECT lib/nlm_lib.cpp lib/nlm_lib.h)
 add_library(rapidcsv OBJECT lib/rapidcsv.h)
