@@ -22,6 +22,39 @@ void matread(char* file, std::vector<double>& v, const std::string& variable){
 }
 #endif
 
+#ifdef USE_OCTAVE
+void octave_read(char* file, std::vector<double>& v , const std::string& variable) {
+    oc::interpreter inter {};
+    try {
+        inter.initialize_history (false);
+        inter.initialize_load_path (false);
+        inter.initialize();
+        if (! inter.initialized ()){
+            std::cerr << "Octave interpreter initialization failed!"
+            << std::endl;
+            exit (1);
+        }
+        octave_value_list in{};
+        in(0) = file;
+        in(1) ="-mat";
+        in(2) = variable;
+        octave_value_list out = Fload(inter, in, 1);
+        octave_value val = out(0).subsref(".", {ovl(variable)});
+        Array<double> arr=  val.array_value().as_matrix();
+        v = std::vector<double>(arr.numel());
+        v = std::vector<double>(arr.data(), arr.data() + arr.numel());
+    }  catch (const octave::exit_exception& ex){
+        std::cerr << "Octave interpreter exited with status = "
+                  << ex.exit_status () << std::endl;
+    }
+    catch (const octave::execution_exception& e)    {
+        std::cerr << "error encountered in Octave evaluator!" << std::endl;
+        std::cerr << e.info();
+    }
+}
+#endif
+
+
 namespace rc = rapidcsv;
 
 void read_csv(char* file, std::vector<double>& v){

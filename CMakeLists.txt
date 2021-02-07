@@ -7,11 +7,20 @@ find_package(PkgConfig)
 
 option(ENABLE_CLANGTIDY "Enable clang-tidy support?" OFF)
 option(ENABLE_PYBIND11 "Enable python bindings support?" ON)
+option(ENABLE_OCTAVE "Enable Octave support?" OFF)
 option(ENABLE_MATLAB "Enable Matlab support?" OFF)
 
 if (ENABLE_CLANGTIDY)
     include(cmake/FindClangTidy.cmake)
 endif ()
+
+if(ENABLE_OCTAVE)
+    include(cmake/FindOctave.cmake)
+    if(OCTAVE_FOUND)
+        link_libraries(${OCTAVE_LIBRARIES})
+        set(USE_OCTAVE 1)
+    endif()
+endif()
 
 if(ENABLE_MATLAB)
     include(cmake/FindMatlab.cmake)
