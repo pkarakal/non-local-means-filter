@@ -13,11 +13,12 @@ More information, as project progresses
 3. g++
 4. CUDA
 5. Python
-6. PyBind11  
-7. pkgconf (Optional)
-8. Octave (Optional)
-9. Matlab (Optional)
-10. OpenCV (Optional)
+6. PyBind11
+7. Boost 
+8. pkgconf (Optional)
+9. Octave (Optional)
+10. Matlab (Optional)
+11. OpenCV (Optional)
 
 To install them on variant Linux distributions follow the instructions below
 
@@ -27,7 +28,7 @@ To install them on variant Linux distributions follow the instructions below
 $ sudo dnf config-manager --add-repo=https://negativo17.org/repos/fedora-nvidia.repo
 $ sudo dnf upgrade --refresh # updates installed packages and repositories metadata
 $ sudo dnf install cmake make gcc-c++ pkgconf python3 nvidia-driver nvidia-driver-cuda \
-  cuda-devel python3-pybind11  octave octave-devel opencv opencv-devel
+  cuda-devel python3-pybind11  octave octave-devel opencv opencv-devel boost boost-devel
 ```
 
 #### Ubuntu
@@ -38,7 +39,7 @@ $ sudo apt-get update && sudo apt-get upgrade
 $ sudo apt install ubuntu-drivers-common && ubuntu-drivers install nvidia-driver-460
 # installs dependencies
 $ sudo apt install cmake make g++  pkg-config nvidia-cuda-toolkit \ 
-  python-pybind11 octave liboctave-dev libopencv-dev
+  python-pybind11 octave liboctave-dev libopencv-dev libboost-all-dev
 ```
 
 To install Matlab, visit https://www.mathworks.com/
