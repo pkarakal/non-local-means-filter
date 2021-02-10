@@ -26,4 +26,13 @@ void opencv_read(char* file, std::vector<double>& v);
 
 #include "rapidcsv.h"
 void read_csv(char* file, std::vector<double>& v);
+
+
+#include <boost/program_options.hpp>
+#include <ostream>
+#include <algorithm>
+#include <iterator>
+void parse_cli_args(int nargs, char** args, std::vector<std::string>& paths,
+          std::vector<std::string>& format, bool noise);
+
 #endif //NON_LOCAL_MEANS_FILTER_NLM_LIB_H
