@@ -1,7 +1,7 @@
 #include "nlm_lib.h"
 
 #ifdef USE_MATLAB
-void matread(char* file, std::vector<double>& v, const std::string& variable){
+void matread(const char* file, std::vector<double>& v, const std::string& variable){
     // open MAT-file
     MATFile *pmat = matOpen(file, "r");
     if (pmat == nullptr) return;
@@ -23,7 +23,8 @@ void matread(char* file, std::vector<double>& v, const std::string& variable){
 #endif
 
 #ifdef USE_OCTAVE
-void octave_read(char* file, std::vector<double>& v , const std::string& variable) {
+namespace oc = octave;
+void octave_read(const char* file, std::vector<double>& v , const std::string& variable) {
     oc::interpreter inter {};
     try {
         inter.initialize_history (false);
@@ -57,7 +58,7 @@ void octave_read(char* file, std::vector<double>& v , const std::string& variabl
 #ifdef USE_OPENCV
 static inline double divide (double x) { return x/255; }
 
-void opencv_read(char* file, std::vector<double>& v){
+void opencv_read(const char* file, std::vector<double>& v){
     cv::Mat image;
     image = cv::imread( file, 0 );
     if ( !image.data )
@@ -74,11 +75,11 @@ void opencv_read(char* file, std::vector<double>& v){
 
 namespace rc = rapidcsv;
 
-void read_csv(char* file, std::vector<double>& v){
+void read_csv(const char* file, std::vector<double>& v, int& n, int& d){
     rc::Document document = rc::Document();
     document.Load(file);
-    int n = document.GetRowCount();
-    int d = document.GetColumnCount();
+    n = document.GetRowCount();
+    d = document.GetColumnCount();
     char *end;
     v = std::vector<double>(n * d);
     // create a n*d vector from row vectors.
@@ -87,6 +88,16 @@ void read_csv(char* file, std::vector<double>& v){
         std::copy(vec.begin(), vec.end(), v.begin() + (i * d));
         vec.clear();
     }
+}
+
+void write_csv(const char* file, std::vector<std::vector<double>>& v){
+    rc::Document document = rc::Document("", rc::LabelParams(-1, -1));
+    uint i = 0;
+    for(std::vector<double>& vec: v) {
+        document.SetRow(i, vec);
+        ++i;
+    }
+    document.Save(std::string(file)+"_denoised.csv");
 }
 
 namespace po = boost::program_options;

@@ -1,0 +1,11 @@
+#ifndef NON_LOCAL_MEANS_FILTER_DEFINITIONS_H
+#define NON_LOCAL_MEANS_FILTER_DEFINITIONS_H
+
+#cmakedefine USE_OCTAVE
+#cmakedefine USE_MATLAB
+#cmakedefine USE_PARSED_FILES
+#cmakedefine USE_OPENCV
+#cmakedefine USE_BOOST
+#cmakedefine USE_OPENMP
+
+#endif //NON_LOCAL_MEANS_FILTER_DEFINITIONS_H
