@@ -4,28 +4,30 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "definitions.h"
 
 #ifdef USE_MATLAB
 #include <mat.h>
 #include <matrix.h>
-void matread(char* file, std::vector<double>& v, const std::string& variable);
+void matread(const char* file, std::vector<double>& v, const std::string& variable);
 #endif
 
 #ifdef USE_OCTAVE
 #include <oct.h>
 #include <builtin-defun-decls.h>
 #include <interpreter.h>
-void octave_read(char* file, std::vector<double>& v, const std::string& variable);
+void octave_read(const char* file, std::vector<double>& v, const std::string& variable);
 #endif
 
 #ifdef USE_OPENCV
 #include <algorithm>
 #include <opencv4/opencv2/opencv.hpp>
-void opencv_read(char* file, std::vector<double>& v);
+void opencv_read(const char* file, std::vector<double>& v);
 #endif
 
 #include "rapidcsv.h"
-void read_csv(char* file, std::vector<double>& v);
+void read_csv(const char* file, std::vector<double>& v, int& n, int& d);
+void write_csv(const char* file, std::vector<std::vector<double>>& v);
 
 
 #include <boost/program_options.hpp>

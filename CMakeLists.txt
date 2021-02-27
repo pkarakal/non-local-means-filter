@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 project(non_local_means_filter LANGUAGES CXX CUDA)
 set(CMAKE_CUDA_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(PkgConfig)
 
@@ -67,7 +68,9 @@ if(ENABLE_BOOST)
     endif()
 endif()
 
+configure_file(lib/definitions.h.in lib/definitions.h)
 add_executable(non_local_means_filter main.cu)
+target_link_libraries(non_local_means_filter nlm_lib)
 
 if(ENABLE_OCTAVE AND OCTAVE_FOUND)
     target_link_libraries(non_local_means_filter ${OCTAVE_LIBS})

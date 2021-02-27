@@ -98,3 +98,6 @@ converter
 main
 non_local_means_filter
 preprocessor
+
+# configured files
+lib/definitions.h
