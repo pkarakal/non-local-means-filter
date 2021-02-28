@@ -1,4 +1,7 @@
 #include "nlm_lib.h"
+#ifdef USE_OPENMP
+#include <omp.h>
+#endif
 
 #ifdef USE_MATLAB
 void matread(const char* file, std::vector<double>& v, const std::string& variable){
@@ -132,4 +135,71 @@ void parse_cli_args(int nargs, char** args, std::vector<std::string>& paths,
     format = vm.count("format") ? vm["format"].as< std::vector<std::string> >() : std::vector<std::string>();
     variable = vm.count("variable") ? vm["variable"].as< std::vector<std::string> >() : std::vector<std::string>();
     patchSize = vm.count("patchSize") ? vm["patchSize"].as< std::vector<int> >() : std::vector<int>();
+}
+
+void gaussian_kernel(std::vector<std::vector<double>>& kernel, int kernelSize, double sigma){
+    double sum = 0;
+    double mu = ((double) kernelSize)/2.0;
+    double alpha = 0.5* M_PI * std::pow(sigma,2);
+    int i=0;
+    double maxElement;
+#ifdef USE_OPENMP
+    omp_set_num_threads(omp_get_max_threads());
+#pragma omp parallel shared(sum, maxElement)
+#pragma omp for
+#endif
+    for (i = 0; i < kernelSize; i++){
+        for (int j = 0; j < kernelSize; j++){
+            kernel.at(i).at(j) = alpha * std::exp(-((j - mu)*(j - mu) + (i - mu)*(i - mu)) / (2*std::pow(sigma,2)));
+#ifdef USE_OPENMP
+#pragma omp atomic
+#endif
+            sum += kernel.at(i).at(j);
+        }
+    }
+    for(std::vector<double>& vec: kernel){
+        for(double& item: vec)
+            item /= sum;
+    }
+
+    for(std::vector<double>& vec: kernel){
+        double local_max = *std::max_element(vec.begin(), vec.end());
+        if (maxElement< local_max)
+#pragma omp critical
+            maxElement = local_max;
+    }
+
+    for(std::vector<double>& vec: kernel){
+        for(double& item: vec)
+            item /= maxElement;
+    }
+}
+
+static inline double gaussian_noise(double sigma, double x){
+  return (1 / (sigma*sqrt(2*M_PI)))*exp((-std::pow(x,2)) / (2*std::pow(sigma,2)));
+}
+
+double fRand(double fMin, double fMax){
+  std::random_device rd;
+  std::mt19937 mt(rd());
+  std::uniform_real_distribution<double> dist(0.0, 1.0);
+  double f = dist(mt);
+  return fMin + f * (fMax - fMin);
+}
+
+void add_gaussian_noise(const std::vector<double>& image, int size,
+						double scalar, std::vector<double>& noise){
+  srand(time(nullptr));
+  int i;
+  double value, effect;
+#ifdef USE_OPENMP
+  omp_set_num_threads(omp_get_max_threads());
+#pragma omp parallel private(i, value, effect)
+#pragma omp for
+#endif
+  for(i=0; i < size; i++){
+	value    = fRand(0.0, 1.0);
+	effect   = gaussian_noise(2.0, value) - 0.1;
+	noise.at(i) = (scalar*effect + 1) * image.at(i);
+  }
 }

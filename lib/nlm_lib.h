@@ -34,10 +34,14 @@ void write_csv(const char* file, std::vector<std::vector<double>>& v);
 #include <ostream>
 #include <algorithm>
 #include <iterator>
+#include <random>
 void parse_cli_args(int nargs, char** args, std::vector<std::string>& paths,
 					std::vector<std::string>& format,
 					std::vector<std::string>& variable,
 					std::vector<int>& patchSize, bool noise);
 
+void gaussian_kernel(std::vector<std::vector<double>>& kernel, int kernelSize, double sigma);
+void add_gaussian_noise(const std::vector<double>& image, int size,
+						double scalar, std::vector<double>& noise);
 
 #endif //NON_LOCAL_MEANS_FILTER_NLM_LIB_H
