@@ -44,6 +44,8 @@ if(ENABLE_PYBIND11)
 endif()
 
 add_library(nlm_lib OBJECT lib/nlm_lib.cpp lib/nlm_lib.h)
+add_library(nlm_cu_lib OBJECT lib/nlm_cu_lib.cuh)
+#target_link_libraries(nlm_cu_lib PUBLIC thrust)
 add_library(rapidcsv OBJECT lib/rapidcsv.h)
 target_link_libraries(rapidcsv)
 
@@ -79,7 +81,7 @@ endif()
 
 configure_file(lib/definitions.h.in lib/definitions.h)
 add_executable(non_local_means_filter main.cu)
-target_link_libraries(non_local_means_filter nlm_lib)
+target_link_libraries(non_local_means_filter nlm_lib nlm_cu_lib)
 
 if(ENABLE_OCTAVE AND OCTAVE_FOUND)
     target_link_libraries(non_local_means_filter ${OCTAVE_LIBS})
