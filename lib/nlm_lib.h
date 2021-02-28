@@ -35,6 +35,9 @@ void write_csv(const char* file, std::vector<std::vector<double>>& v);
 #include <algorithm>
 #include <iterator>
 void parse_cli_args(int nargs, char** args, std::vector<std::string>& paths,
-          std::vector<std::string>& format, bool noise);
+					std::vector<std::string>& format,
+					std::vector<std::string>& variable,
+					std::vector<int>& patchSize, bool noise);
+
 
 #endif //NON_LOCAL_MEANS_FILTER_NLM_LIB_H

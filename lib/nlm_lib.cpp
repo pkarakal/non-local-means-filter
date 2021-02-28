@@ -108,16 +108,20 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& v)
     return os;
 }
 
-void parse_cli_args(int nargs, char** args, std::vector<std::string>& paths, std::vector<std::string>& format, bool noise){
+void parse_cli_args(int nargs, char** args, std::vector<std::string>& paths,
+					std::vector<std::string>& format, std::vector<std::string>& variable,
+					std::vector<int>& patchSize, bool noise){
     po::options_description desc("Allowed options");
-    desc.add_options()
-            ("help", "produce help message")
-            ("path,p", po::value< std::vector<std::string> >(),
-             "input path to file")
-            ("format,f", po::value< std::vector<std::string> >(),
-                    "input file format. accepted values are mat, jpg, jpeg and png")
-            ("add-noise",po::bool_switch(&noise) ,"add noise to image?");
-    po::variables_map vm;
+  desc.add_options()("help", "produce help message")(
+	  "path,p", po::value<std::vector<std::string>>(), "input path to file")(
+	  "format,f", po::value<std::vector<std::string>>(),
+	  "input file format. accepted values are mat, jpg, jpeg and png")(
+	  "add-noise", po::bool_switch(&noise),
+	  "add noise to image?")("variable", po::value<std::vector<std::string>>(),
+							 "specify the variable to search in the mat-file")(
+	  "patchSize", po::value<std::vector<int>>(),
+	  "specify the patch size");
+  po::variables_map vm;
     po::store(po::parse_command_line(nargs, args,desc), vm);
     po::notify(vm);
     if (vm.count("help")) {
@@ -126,4 +130,6 @@ void parse_cli_args(int nargs, char** args, std::vector<std::string>& paths, std
     }
     paths = vm.count("path") ? vm["path"].as< std::vector<std::string> >() : std::vector<std::string>();
     format = vm.count("format") ? vm["format"].as< std::vector<std::string> >() : std::vector<std::string>();
+    variable = vm.count("variable") ? vm["variable"].as< std::vector<std::string> >() : std::vector<std::string>();
+    patchSize = vm.count("patchSize") ? vm["patchSize"].as< std::vector<int> >() : std::vector<int>();
 }
