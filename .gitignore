@@ -101,3 +101,6 @@ preprocessor
 
 # configured files
 lib/definitions.h
+
+# csvs
+*.csv
